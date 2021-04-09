@@ -19,7 +19,9 @@ def togregorian(x):
     gregoriandate = dt.date(1, 1, 1) + dt.timedelta(days=x)
     return gregoriandate
 
-Country = 'Belgium'
+#import data and some preprocessing
+
+Country = 'Uruguay'
 Countrytwo = 'Belgium'
 
 url = 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/locations.csv'
@@ -59,10 +61,6 @@ plt.xlabel('Date')
 plt.ylabel('People per 100 of population')
 
 plt.show()
-        #%% compare 2 countries
-    
-
-
 
         #%% vaccine per manufucturer
 
@@ -133,7 +131,7 @@ togregorian(int(y_pred[0]))
 
 str(togregorian(int(y_pred[0])))        
         
-          #%% everycountry
+          #%% everycountry with a for loop
 Country = []
 Prediction = []
 for x in dfvac['location'].unique():
@@ -164,22 +162,21 @@ for x in dfvac['location'].unique():
         Country.append(x)
         Prediction.append(int(y_pred[0]))
     
-          #%% dataframe   
+          #%% dataframe of the result and exporting to excel
 d = {'Country':Country,'Prediction':Prediction}
 A = pd.DataFrame(d)
 A['Predictiondate']=A['Prediction'].apply(togregorian)
 A['Predictiondate'] = pd.to_datetime(A['Predictiondate'])
 B = A.sort_values(by=['Predictiondate'])
 
-B  = B.drop([30,49,71,14,39,14,50,67], axis=0)
+B  = B.drop([30,49,71,14,39,14,50,67, 83, 87, 54], axis=0)
 
 L = B.head(20)
             
-
 sns.relplot(x="Country", y="Predictiondate", hue="Country", data=L)
 
-with pd.ExcelWriter('coviddate.xlsx') as writer:
-    B.to_excel(writer, sheet_name='Data preprocessed')
+with pd.ExcelWriter('output.xlsx') as writer:  
+    B.to_excel(writer, sheet_name='CovidHerd')
         
         
         
